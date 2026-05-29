@@ -13,7 +13,7 @@ $offset = ($page - 1) * $per_page;
 $total = $pdo->query("SELECT COUNT(*) FROM auction_lots WHERE status = 'active'")->fetchColumn();
 $total_pages = ceil($total / $per_page);
 
-// Запрос лотов - ПРОСТОЙ ЗАПРОС БЕЗ СОРТИРОВКИ
+// Запрос лотов
 $sql = "
     SELECT l.*, c.name as category_name,
            (SELECT COUNT(*) FROM auction_bids WHERE lot_id = l.id) as bids_count
@@ -29,6 +29,14 @@ $lots = $pdo->query($sql)->fetchAll();
 // Категории для сайдбара
 $categories = $pdo->query("SELECT * FROM auction_categories ORDER BY name")->fetchAll();
 
+// Проверка роли пользователя для админ-кнопок
+$user_role = null;
+if (isLoggedIn()) {
+    $stmt_role = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt_role->execute([$_SESSION['user_id']]);
+    $user_role = $stmt_role->fetch()['role'] ?? 'user';
+}
+
 include 'header.php';
 ?>
 
@@ -43,16 +51,33 @@ include 'header.php';
         <?php endif; ?>
     </section>
 
+    <!-- Кнопки пользователя -->
+    <?php if (isLoggedIn()): ?>
+        <div style="margin-bottom: 30px; text-align: right;">
+            <a href="my_lots.php" style="background: #c5a059; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block; margin-right: 10px;">
+                📦 Мои объявления
+            </a>
+            <?php if ($user_role === 'admin'): ?>
+                <a href="admin_create_lot.php" style="background: #2d8a57; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;">
+                    + Создать лот (админ)
+                </a>
+                <a href="admin_panel.php" style="background: #243447; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block; margin-left: 10px;">
+                    Управление лотами
+                </a>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
     <div class="auction-grid">
         <!-- Сайдбар -->
         <aside class="auction-sidebar">
-            <h3 class="sidebar-title">Категории</h3>
+            <h3 class="sidebar-title">Все категории</h3>
             <ul class="auction-cat-list">
                 <li><a href="auction_index.php"> Все лоты</a></li>
                 <?php foreach ($categories as $cat): ?>
                     <li>
                         <a href="auction_categories.php?cat=<?php echo $cat['slug']; ?>">
-                             <?php echo htmlspecialchars($cat['name']); ?>
+                            <?php echo htmlspecialchars($cat['name']); ?>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -97,8 +122,8 @@ include 'header.php';
                                 <h4><?php echo htmlspecialchars($lot['title']); ?></h4>
                                 <p><?php echo htmlspecialchars(mb_substr($lot['description'], 0, 100)) . '...'; ?></p>
                                 <div class="lot-status">
-                                    <span> Ставок: <?php echo $lot['bids_count']; ?></span>
-                                    <span> Осталось: <?php echo $time_left; ?></span>
+                                    <span>Ставок: <?php echo $lot['bids_count']; ?></span>
+                                    <span>Осталось: <?php echo $time_left; ?></span>
                                 </div>
                             </div>
                             <div class="lot-footer">
@@ -106,15 +131,14 @@ include 'header.php';
                                     <?php echo number_format($lot['current_price'], 0, '', ' '); ?> ₽
                                 </div>
                                 <a href="auction_lot.php?id=<?php echo $lot['id']; ?>" class="btn-3d btn-bid">
-                                    Сделать ставку →
+                                    Смотреть →
                                 </a>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="no-lots">
-                        <p>😕 Активных лотов пока нет.</p>
-                        <p>Проверьте, что в базе данных есть лоты со статусом 'active'.</p>
+                        <p>Активных лотов пока нет.</p>
                     </div>
                 <?php endif; ?>
             </div>

@@ -125,14 +125,6 @@
     color: #243447;
 }
 
-.sort-block select {
-    padding: 8px 15px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background: white;
-    cursor: pointer;
-}
-
 .lots-count {
     color: #666;
     font-size: 14px;
@@ -287,10 +279,6 @@
     text-decoration: none;
 }
 
-.breadcrumbs a:hover {
-    text-decoration: underline;
-}
-
 .lot-detail-grid {
     display: grid;
     grid-template-columns: 1fr 380px;
@@ -338,9 +326,19 @@
     padding: 8px 0;
 }
 
-.status-active { color: #2d8a57; font-weight: bold; }
-.status-sold { color: #d9534f; font-weight: bold; }
-.status-expired { color: #888; }
+.status-active {
+    color: #2d8a57;
+    font-weight: bold;
+}
+
+.status-sold {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.status-expired {
+    color: #888;
+}
 
 /* Панель ставок */
 .lot-bid-panel {
@@ -430,10 +428,6 @@
     font-weight: 600;
 }
 
-.bid-table tr:hover {
-    background: #fafafa;
-}
-
 .no-bids {
     color: #888;
     padding: 20px;
@@ -480,10 +474,6 @@
     color: #c5a059;
     text-decoration: none;
     font-weight: 500;
-}
-
-.btn-back:hover {
-    text-decoration: underline;
 }
 
 .no-lots {

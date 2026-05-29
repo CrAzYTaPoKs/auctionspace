@@ -28,7 +28,8 @@ if (session_status() === PHP_SESSION_NONE) {
                     <li><a href="auction_index.php">Аукцион</a></li>
                     <li><a href="auction_categories.php">Категории</a></li>
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <li><a href="profile.php">👤 <?php echo htmlspecialchars($_SESSION['username']); ?></a></li>
+                        <li><a href="/my_lots.php">Мои лоты</a></li>
+                        <li><a href="profile.php"><?php echo htmlspecialchars($_SESSION['username']); ?></a></li>
                         <li><a href="logout.php">Выйти</a></li>
                     <?php else: ?>
                         <li><a href="login.php">Вход</a></li>

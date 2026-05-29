@@ -9,6 +9,11 @@ if (!isLoggedIn()) {
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
+
+// Проверка роли пользователя
+$stmt_role = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+$stmt_role->execute([$_SESSION['user_id']]);
+$user_role = $stmt_role->fetch()['role'] ?? 'user';
 ?>
 
 <!DOCTYPE html>
@@ -61,6 +66,21 @@ $user = $stmt->fetch();
             color: #243447;
             margin-bottom: 20px;
         }
+        .admin-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .admin-link a {
+            background: #243447;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .admin-link a:hover {
+            background: #1a2a38;
+        }
     </style>
 </head>
 <body>
@@ -90,6 +110,12 @@ $user = $stmt->fetch();
                         <div class="info-value"><?php echo htmlspecialchars($user['email']); ?></div>
                     </div>
                     <div class="info-row">
+                        <div class="info-label">Роль:</div>
+                        <div class="info-value">
+                            <?php echo $user_role === 'admin' ? 'Администратор' : 'Пользователь'; ?>
+                        </div>
+                    </div>
+                    <div class="info-row">
                         <div class="info-label">Дата регистрации:</div>
                         <div class="info-value"><?php echo date('d.m.Y H:i:s', strtotime($user['created_at'])); ?></div>
                     </div>
@@ -99,6 +125,12 @@ $user = $stmt->fetch();
                     <a href="auction_index.php" class="btn">На аукцион</a>
                     <a href="logout.php" class="btn btn-logout">Выйти</a>
                 </div>
+                
+                <?php if ($user_role === 'admin'): ?>
+                    <div class="admin-link">
+                        <a href="admin_panel.php">Админ-панель</a>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </main>

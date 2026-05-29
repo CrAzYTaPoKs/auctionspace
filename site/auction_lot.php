@@ -18,7 +18,7 @@ $stmt->execute([$lot_id]);
 $lot = $stmt->fetch();
 
 if (!$lot) {
-    die("<div class='container'><h2>❌ Лот не найден</h2><a href='auction_index.php'>Вернуться</a></div>");
+    die("<div class='container'><h2> Лот не найден</h2><a href='auction_index.php'>Вернуться</a></div>");
 }
 
 // Обновляем просмотры
@@ -79,11 +79,11 @@ include 'header.php';
 
                 <div class="lot-status-block">
                     <div class="status-item">
-                        <span>⏰ Окончание торгов:</span>
+                        <span>Окончание торгов:</span>
                         <strong><?php echo date('d.m.Y H:i', strtotime($lot['end_time'])); ?></strong>
                     </div>
                     <div class="status-item">
-                        <span>📊 Статус:</span>
+                        <span>Статус:</span>
                         <?php if ($lot['status'] == 'active'): ?>
                             <span class="status-active"> Активен</span>
                         <?php elseif ($lot['status'] == 'sold'): ?>
